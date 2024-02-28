@@ -27,5 +27,8 @@
   </div>
 </div>
 
-<%= link_to 'Back', photos_path %>
-<input type="button" value="このページを印刷" onclick="window.print();">
+<% if can_view_photo?(@photo) %>
+  <%= image_tag @photo.url %>
+<% else %>
+  <p>You don't have permission to view this photo.</p>
+<% end %>

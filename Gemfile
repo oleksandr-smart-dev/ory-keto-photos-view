@@ -57,5 +57,6 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'typhoeus'
 gem 'config'
+gem 'ory-keto-client'
 gem 'ory-hydra-client'
 gem 'jwt'

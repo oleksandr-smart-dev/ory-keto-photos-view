@@ -1,23 +1,25 @@
 class PhotosController < ApplicationController
-  before_action :authenticate!
-  before_action :set_access_token
+  before_action :authenticate_user!
+  before_action :set_photo, only: [:show]
 
-  # GET /photos or /photos.json
-  def index
-    @photos = PhotosService.instance.own_photos(@access_token)
-  end
-
-  # GET /photos/1 or /photos/1.json
   def show
-    @photo = PhotosService.instance.own_photo(@access_token, params[:id])
+    unless can_view_photo?(@photo)
+      flash[:error] = "You don't have permission to view this photo."
+      redirect_to root_path
+    end
   end
 
   private
 
-  def set_access_token
-    authorization = Authorization.find_by(subject: current_user)
-    raise Errors::AuthenticationFailed if authorization.blank?
+  def set_photo
+    @photo = Photo.find(params[:id])
+  end
 
-    @access_token = authorization.access_token
+  def can_view_photo?(photo)
+    if photo.user_id == current_user.id
+      return true
+    else
+      return current_user.has_permission?(photo.id)
+    end
   end
 end
